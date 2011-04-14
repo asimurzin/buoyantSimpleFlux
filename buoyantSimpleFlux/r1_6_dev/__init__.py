@@ -262,12 +262,8 @@ import sys, os
 if FOAM_BRANCH_VERSION( "dev", ">=", "010600" ):
    if __name__ == "__main__" :
       argv = sys.argv
-      if len( argv ) > 1 and argv[ 1 ] == "-test":
-         argv = None
-         test_dir= os.path.join( os.environ[ "PYFOAM_TESTING_DIR" ],'cases', 'propogated', 'r1.6-dev', 'heatTransfer', 'buoyantSimpleFoam', 'hotRoom' )
-         argv = [ __file__, "-case", test_dir ]
-         pass
       os._exit( main_standalone( len( argv ), argv ) )
+      pass
 else:
    from Foam.OpenFOAM import ext_Info
    ext_Info()<< "\nTo use this solver, It is necessary to SWIG OpenFoam1.6 \n "

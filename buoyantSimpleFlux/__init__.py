@@ -25,66 +25,39 @@
 
 #--------------------------------------------------------------------------------------
 from Foam import FOAM_VERSION, FOAM_REF_VERSION, FOAM_BRANCH_VERSION
-import sys, os
-if FOAM_VERSION( "<", "010600" ):
-    from Foam.OpenFOAM import ext_Info
-    ext_Info() << "\n\n To use this solver, it is necessary to SWIG OpenFOAM-1.6 or higher\n"    
+if FOAM_REF_VERSION( "==", "010600" ):
+    from buoyantSimpleFlux.r1_6 import *
     pass
 
 
 #----------------------------------------------------------------------------------------------
-if FOAM_REF_VERSION( "==", "010600" ):
-   if __name__ == "__main__" :
-      argv = sys.argv
-      if len( argv ) > 1 and argv[ 1 ] == "-test":
-         argv = None
-         test_dir= os.path.join( os.environ[ "PYFOAM_TESTING_DIR" ],'cases', 'local', 'r1.6', 'heatTransfer', 'buoyantSimpleFoam', 'hotRoom' )
-         argv = [ __file__, "-case", test_dir ]
-         pass
-      from Foam.applications.solvers.heatTransfer.r1_6.buoyantSimpleFoam import main_standalone
-      os._exit( main_standalone( len( argv ), argv ) )
-      pass
-   else:
-      from Foam.applications.solvers.heatTransfer.r1_6.buoyantSimpleFoam import *
-      pass
-   pass
-
-
-#----------------------------------------------------------------------------------------------
 if FOAM_BRANCH_VERSION( "dev", ">=", "010600" ):
-   if __name__ == "__main__" :
-      argv = sys.argv
-      if len( argv ) > 1 and argv[ 1 ] == "-test":
-         argv = None
-         test_dir= os.path.join( os.environ[ "PYFOAM_TESTING_DIR" ],'cases', 'propogated', 'r1.6-dev', 'heatTransfer', 'buoyantSimpleFoam', 'hotRoom' )
-         argv = [ __file__, "-case", test_dir ]
-         pass
-      from Foam.applications.solvers.heatTransfer.r1_6_dev.buoyantSimpleFoam import main_standalone
-      os._exit( main_standalone( len( argv ), argv ) )
-      pass
-   else:
-      from Foam.applications.solvers.heatTransfer.r1_6_dev.buoyantSimpleFoam import *
-      pass
-   pass
+    from buoyantSimpleFlux.r1_6_dev import *
+    pass
 
 
 #----------------------------------------------------------------------------------------------
 if FOAM_REF_VERSION( ">=", "010700" ):
-   if __name__ == "__main__" :
-      argv = sys.argv
-      if len( argv ) > 1 and argv[ 1 ] == "-test":
-         argv = None
-         test_dir= os.path.join( os.environ[ "PYFOAM_TESTING_DIR" ],'cases', 'propogated', 'r1.7.0', 'heatTransfer', 'buoyantSimpleFoam', 'hotRoom' )
-         argv = [ __file__, "-case", test_dir ]
-         pass
-      from Foam.applications.solvers.heatTransfer.r1_7_0.buoyantSimpleFoam import main_standalone
-      os._exit( main_standalone( len( argv ), argv ) )
-      pass
-   else:
-      from Foam.applications.solvers.heatTransfer.r1_7_0.buoyantSimpleFoam import *
-      pass
-   pass
+    from buoyantSimpleFlux.r1_7_0 import *
+    pass
 
 
 #--------------------------------------------------------------------------------------
+def entry_point():
+    try:
+       import sys; argv = sys.argv
+       return main_standalone( len( argv ), argv )
+    except NameError:
+       print
+       print "There is no implementation of the current OpenFOAM version"
+       print
+       pass
 
+
+#--------------------------------------------------------------------------------------
+if __name__ == "__main__" :
+    entry_point()
+    pass
+
+
+#--------------------------------------------------------------------------------------

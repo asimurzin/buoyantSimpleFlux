@@ -71,7 +71,7 @@ def createFields( runTime, mesh, g ):
                                               ref.IOobject.AUTO_WRITE ),
                                 mesh );
     # Force p_rgh to be consistent with p
-    p_rgh <<= p - rho * gh
+    p_rgh << p - rho * gh
     
     pRefCell = 0
     pRefValue = 0.0
@@ -110,15 +110,15 @@ def fun_hEqn( thermo, rho, p, h, phi, turbulence ):
 def fun_pEqn( mesh, runTime, simple, thermo, rho, p, h, psi, U, phi, turbulence, \
                       gh, ghf, p_rgh, UEqn, pRefCell, pRefValue, cumulativeContErr, initialMass):
       
-      rho <<= thermo.rho()
+      rho << thermo.rho()
       rho.relax()
 
       rAU = 1.0 / UEqn.A()
       rhorAUf = ref.surfaceScalarField( ref.word( "(rho*(1|A(U)))" ), ref.fvc.interpolate( rho() * rAU ) )
       
-      U <<= rAU * UEqn.H()
+      U << rAU * UEqn.H()
       
-      phi <<= ref.fvc.interpolate( rho ) * ( ref.fvc.interpolate( U() ) & mesh.Sf() )
+      phi << ref.fvc.interpolate( rho ) * ( ref.fvc.interpolate( U() ) & mesh.Sf() )
       
       closedVolume = ref.adjustPhi( phi, U, p_rgh )
       
@@ -147,16 +147,16 @@ def fun_pEqn( mesh, runTime, simple, thermo, rho, p, h, psi, U, phi, turbulence,
   
       cumulativeContErr = ref.ContinuityErrs( phi, runTime, mesh, cumulativeContErr )
       
-      p <<= p_rgh + rho * gh
+      p << p_rgh + rho * gh
 
       # For closed-volume cases adjust the pressure level
       # to obey overall mass continuity
       if closedVolume:
           p += ( initialMass - ref.fvc.domainIntegrate( psi * p ) ) / ref.fvc.domainIntegrate( psi ) 
-          p_rgh <<= p - rho * gh
+          p_rgh << p - rho * gh
           pass
       
-      rho <<= thermo.rho()
+      rho << thermo.rho()
       rho.relax()
       
       ref.ext_Info() << "rho max/min : " <<  rho.ext_max().value() << " " << rho.ext_min().value() << ref.nl
